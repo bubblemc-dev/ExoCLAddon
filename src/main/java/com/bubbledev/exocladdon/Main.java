@@ -7,9 +7,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class ExoCLAddonPlugin extends JavaPlugin {
+public final class Main extends JavaPlugin {
 
-    private static ExoCLAddonPlugin instance;
+    private static Main instance;
     private ClansLiteAPI clansAPI;
     private GlowingEntities glowing;
     private GlowManager glowManager;
@@ -59,7 +59,7 @@ public final class ExoCLAddonPlugin extends JavaPlugin {
         instance = null;
     }
 
-    public static ExoCLAddonPlugin getInstance() {
+    public static Main getInstance() {
         return instance;
     }
 

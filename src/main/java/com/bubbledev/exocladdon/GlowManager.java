@@ -6,7 +6,6 @@ import me.loving11ish.clans.api.models.Clan;
 import me.loving11ish.clans.api.models.ClanPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -16,11 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GlowManager {
 
-    private final ExoCLAddonPlugin plugin;
+    private final Main plugin;
     private final ClansLiteAPI clansAPI;
     private final GlowingEntities glowing;
 
@@ -29,7 +27,7 @@ public class GlowManager {
 
     private final String META_KEY = "exocladdon_glow_viewer";
 
-    public GlowManager(ExoCLAddonPlugin plugin, ClansLiteAPI clansAPI, GlowingEntities glowing) {
+    public GlowManager(Main plugin, ClansLiteAPI clansAPI, GlowingEntities glowing) {
         this.plugin = plugin;
         this.clansAPI = clansAPI;
         this.glowing = glowing;

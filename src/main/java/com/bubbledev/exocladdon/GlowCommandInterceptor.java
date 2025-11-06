@@ -1,6 +1,5 @@
 package com.bubbledev.exocladdon;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -8,10 +7,10 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class GlowCommandInterceptor implements Listener {
 
-    private final ExoCLAddonPlugin plugin;
+    private final Main plugin;
     private final GlowManager manager;
 
-    public GlowCommandInterceptor(ExoCLAddonPlugin plugin, GlowManager manager) {
+    public GlowCommandInterceptor(Main plugin, GlowManager manager) {
         this.plugin = plugin;
         this.manager = manager;
     }
