@@ -1,0 +1,10 @@
+# ExoCLAddon — настройки
+# Автор: BubbleDev
+# Версия: 1.0.0
+
+messages:
+  toggled-on: "&aПодсветка членов клана: &aвключена"
+  toggled-off: "&eПодсветка членов клана: &cвыключена"
+  not-in-clan: "&cВы не состоите в клане"
+  no-clanslite: "&cClansLite не найден. Плагин ExoCLAddon отключает функции."
+  reloaded: "&aExoCLAddon перезагружен."

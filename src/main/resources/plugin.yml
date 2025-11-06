@@ -1,0 +1,15 @@
+name: ExoCLAddon
+main: com.bubbledev.exocladdon.ExoCLAddonPlugin
+version: 1.0.0
+api-version: '1.21'
+author: BubbleDev
+softdepend: [ClansLite]
+commands:
+  clanglow:
+    description: Тоггл подсветки тиммейтов клана (альтернативная команда)
+    usage: /clanglow [on|off|toggle]
+    permission: exocladdon.glow
+permissions:
+  exocladdon.glow:
+    default: true
+    description: Разрешить игроку включать подсветку тиммейтов
