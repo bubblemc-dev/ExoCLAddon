@@ -186,7 +186,12 @@ public class GlowManager {
                     if (o instanceof UUID u) {
                         uuid = u;
                     } else if (o instanceof ClanPlayer cp) {
-                        uuid = cp.getJavaUUID();
+                        // у ClansLite это String -> конвертируем в UUID
+                        try {
+                            uuid = java.util.UUID.fromString(cp.getJavaUUID());
+                        } catch (IllegalArgumentException ex) {
+                            uuid = null; // вдруг формат неожиданно иной
+                        }
                     } else if (o instanceof String s) {
                         try { uuid = UUID.fromString(s); } catch (IllegalArgumentException ex) {
                             // maybe it's a name
