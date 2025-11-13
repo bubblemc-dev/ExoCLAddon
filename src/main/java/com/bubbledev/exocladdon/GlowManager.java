@@ -19,6 +19,7 @@ import java.util.*;
 public class GlowManager {
 
     private final Main plugin;
+    private final AddonSettings settings;
     private final ClansLiteAPI clansAPI;
     private final GlowingEntities glowing;
 
@@ -27,8 +28,9 @@ public class GlowManager {
 
     private final String META_KEY = "exocladdon_glow_viewer";
 
-    public GlowManager(Main plugin, ClansLiteAPI clansAPI, GlowingEntities glowing) {
+    public GlowManager(Main plugin, AddonSettings settings, ClansLiteAPI clansAPI, GlowingEntities glowing) {
         this.plugin = plugin;
+        this.settings = settings;
         this.clansAPI = clansAPI;
         this.glowing = glowing;
     }
@@ -37,29 +39,31 @@ public class GlowManager {
        Public API
        ===================== */
 
-    public boolean handleToggleCommand(CommandSender sender, String[] args) {
+    public boolean handleToggleCommand(CommandSender sender, String commandUsed, String[] args) {
         if (!(sender instanceof Player p)) {
-            sender.sendMessage("Команда только для игроков.");
+            sender.sendMessage(settings.playerOnlyMessage());
             return true;
         }
-        if (!p.hasPermission("exocladdon.glow")) {
-            p.sendMessage("§cНедостаточно прав.");
+        if (!p.hasPermission(settings.getPermission())) {
+            p.sendMessage(settings.noPermissionMessage());
             return true;
         }
         if (clansAPI == null) {
             p.sendMessage(color(plugin.cfg().getString("messages.no-clanslite")));
             return true;
         }
-        boolean targetState;
-        if (args.length == 0 || args[0].equalsIgnoreCase("toggle")) {
-            targetState = !viewers.contains(p.getUniqueId());
-        } else if (args[0].equalsIgnoreCase("on")) {
-            targetState = true;
-        } else if (args[0].equalsIgnoreCase("off")) {
-            targetState = false;
-        } else {
-            p.sendMessage("§7Использование: §f/" + (Objects.equals(sender.getName(), "CONSOLE") ? "clanglow" : "clanglow") + " §7[on|off|toggle]");
+        AddonSettings.ToggleAction action = args.length == 0
+                ? AddonSettings.ToggleAction.TOGGLE
+                : settings.parseToggleArgument(args[0]);
+        if (action == null) {
+            p.sendMessage(settings.formatUsageMessage(commandUsed));
             return true;
+        }
+        boolean targetState;
+        if (action == AddonSettings.ToggleAction.TOGGLE) {
+            targetState = !viewers.contains(p.getUniqueId());
+        } else {
+            targetState = action == AddonSettings.ToggleAction.ENABLE;
         }
         if (targetState) {
             enableFor(p);
@@ -80,10 +84,10 @@ public class GlowManager {
         }
         viewers.add(viewer.getUniqueId());
         viewer.setMetadata(META_KEY, new FixedMetadataValue(plugin, true));
-        // Apply green glow for each online clanmate (excluding self)
+        // Apply configured glow for each online clanmate (excluding self)
         for (Player mate : getOnlineClanmates(clan, viewer)) {
             try {
-                glowing.setGlowing(mate, viewer, ChatColor.GREEN);
+                glowing.setGlowing(mate, viewer, settings.getGlowColor());
             } catch (Throwable t) {
                 // Fallback: do nothing special
             }
@@ -115,7 +119,7 @@ public class GlowManager {
 
     public void onPlayerJoin(@NotNull Player joined) {
         if (clansAPI == null) return;
-        // For each viewer toggled ON that shares the same clan, show green glow of the joined player *to that viewer*
+        // For each viewer toggled ON that shares the same clan, show configured glow of the joined player *to that viewer*
         Clan joinedClan = clansAPI.getClanByBukkitPlayer(joined);
         if (joinedClan == null) return;
         Set<UUID> toggled = new HashSet<>(viewers);
@@ -127,7 +131,7 @@ public class GlowManager {
             if (viewerClan == null) continue;
             if (sameClan(joinedClan, viewerClan) && !viewer.equals(joined)) {
                 try {
-                    glowing.setGlowing(joined, viewer, ChatColor.GREEN);
+                    glowing.setGlowing(joined, viewer, settings.getGlowColor());
                 } catch (Throwable ignored) {}
             }
         }
@@ -216,7 +220,7 @@ public class GlowManager {
 
     private String color(String s) {
         if (s == null) return "";
-        return s.replace("&", "§");
+        return ChatColor.translateAlternateColorCodes('&', s);
     }
 
     /* =====================
