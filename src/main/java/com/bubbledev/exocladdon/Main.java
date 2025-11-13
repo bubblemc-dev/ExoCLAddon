@@ -13,11 +13,13 @@ public final class Main extends JavaPlugin {
     private ClansLiteAPI clansAPI;
     private GlowingEntities glowing;
     private GlowManager glowManager;
+    private AddonSettings settings;
 
     @Override
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
+        settings = new AddonSettings(getConfig());
 
         // Ensure ClansLite exists and fetch API via services manager (per official wiki)
         if (!Bukkit.getPluginManager().isPluginEnabled("ClansLite")) {
@@ -34,14 +36,15 @@ public final class Main extends JavaPlugin {
         glowing = new GlowingEntities(this);
 
         // Manager
-        glowManager = new GlowManager(this, clansAPI, glowing);
+        glowManager = new GlowManager(this, settings, clansAPI, glowing);
         glowManager.loadToggles();
 
         // Listeners & command
-        Bukkit.getPluginManager().registerEvents(new GlowCommandInterceptor(this, glowManager), this);
+        Bukkit.getPluginManager().registerEvents(new GlowCommandInterceptor(settings, glowManager), this);
         Bukkit.getPluginManager().registerEvents(new JoinQuitListener(glowManager), this);
         getCommand("clanglow").setExecutor((sender, cmd, lbl, args) -> {
-            return glowManager.handleToggleCommand(sender, args);
+            String commandUsed = (lbl == null || lbl.isBlank()) ? cmd.getName() : lbl;
+            return glowManager.handleToggleCommand(sender, commandUsed, args);
         });
 
         getLogger().info("ExoCLAddon enabled.");
@@ -65,5 +68,9 @@ public final class Main extends JavaPlugin {
 
     public FileConfiguration cfg() {
         return getConfig();
+    }
+
+    public AddonSettings settings() {
+        return settings;
     }
 }
