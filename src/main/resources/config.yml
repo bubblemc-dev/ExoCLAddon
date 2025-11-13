@@ -2,9 +2,40 @@
 # Автор: BubbleDev
 # Версия: 1.0.0
 
+command:
+  # Список команд, которые будут перехватываться слушателем (без ведущего слеша)
+  base-aliases:
+    - clan
+    - cl
+  # Название сабкоманды, которая включает подсветку
+  glow-subcommand: glow
+  # Допустимые аргументы для вкл/выкл/toggle
+  toggle-aliases:
+    on:
+      - on
+      - enable
+      - true
+    off:
+      - off
+      - disable
+      - false
+    toggle:
+      - toggle
+      - switch
+  # Permission можно переопределить, если он менялся в plugin.yml
+  permission: exocladdon.glow
+
+glow:
+  # Цвет подсветки кланмейтов (ChatColor name)
+  color: GREEN
+
 messages:
   toggled-on: "&aПодсветка членов клана: &aвключена"
   toggled-off: "&eПодсветка членов клана: &cвыключена"
   not-in-clan: "&cВы не состоите в клане"
   no-clanslite: "&cClansLite не найден. Плагин ExoCLAddon отключает функции."
   reloaded: "&aExoCLAddon перезагружен."
+  player-only: "&cКоманда доступна только игрокам."
+  no-permission: "&cНедостаточно прав."
+  # {command} будет заменён на фактическую команду, {options} — на основные алиасы из блоков command.toggle-aliases
+  usage: "&7Использование: &f/{command} [{options}]"
